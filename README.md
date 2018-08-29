@@ -2,15 +2,17 @@
 
 This image runs mongodump to backup data using cronjob to an s3 bucket
 
-## Forked from [halvves/mongodb-backup-s3](https://github.com/halvves/mongodb-backup-s3)
+Support custom S3 compatable storage
+
+Support retension by backups
+
+## Forked from [deenoize/mongodb-backup-s3](https://github.com/deenoize/mongodb-backup-s3)
 
 Added support for AWS S3 v4 authorization mechanism for those who are experiencing error:
 
 ```
 A client error (InvalidRequest) occurred when calling the PutObject operation: The authorization mechanism you have provided is not supported. Please use AWS4-HMAC-SHA256.
 ```
-
-Play well with this docker [nginx-letsencrypt-mongo-portainer](https://github.com/deenoize/nginx-mongo-docker) setup
 
 ## Usage:
 
@@ -23,10 +25,10 @@ docker run -d \
   --env MONGODB_PORT=27017 \
   --env MONGODB_USER=admin \
   --env MONGODB_PASS=password \
-  deenoize/mongodb-backup-s3
+  chobostar/mongodb-backup-s3
 ```
 
-If you link `deenoize/mongodb-backup-s3` to a mongodb container with an alias named mongodb, this image will try to auto load the `host`, `port`, `user`, `pass` if possible. Like this:
+If you link `chobostar/mongodb-backup-s3` to a mongodb container with an alias named mongodb, this image will try to auto load the `host`, `port`, `user`, `pass` if possible. Like this:
 
 ```
 docker run -d \
@@ -36,7 +38,7 @@ docker run -d \
   --env BACKUP_FOLDER=a/sub/folder/path/ \
   --env INIT_BACKUP=true \
   --link my_mongo_db:mongodb \
-  deenoize/mongodb-backup-s3
+  chobostar/mongodb-backup-s3
 ```
 
 If your bucket in not standard region and you get `A client error (PermanentRedirect) occurred when calling the PutObject operation: The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint` use BUCKET_REGION env var like this:
@@ -50,7 +52,7 @@ docker run -d \
   --env BACKUP_FOLDER=a/sub/folder/path/ \
   --env INIT_BACKUP=true \
   --link my_mongo_db:mongodb \
-  deenoize/mongodb-backup-s3
+  chobostar/mongodb-backup-s3
 ```
 
 Add to a docker-compose.yml to enhance your robotic army:
@@ -58,7 +60,7 @@ Add to a docker-compose.yml to enhance your robotic army:
 For automated backups
 ```
 mongodbbackup:
-  image: 'deenoize/mongodb-backup-s3:latest'
+  image: 'chobostar/mongodb-backup-s3:latest'
   links:
     - mongodb
   environment:
@@ -72,7 +74,7 @@ mongodbbackup:
 Or use `INIT_RESTORE` with `DISABLE_CRON` for seeding/restoring/starting a db (great for a fresh instance or a dev machine)
 ```
 mongodbbackup:
-  image: 'deenoize/mongodb-backup-s3:latest'
+  image: 'chobostar/mongodb-backup-s3:latest'
   links:
     - mongodb
   environment:
@@ -93,6 +95,8 @@ mongodbbackup:
 `BUCKET`: - your s3 bucket
 
 `BUCKET_REGION`: - your s3 bucket' region (eg `us-east-2` for Ohio). Optional. Add if you get an error `A client error (PermanentRedirect)`
+
+`ENDPOINT_URL`: - your custom S3 endpoint (eg `https://radosgw.example.com` )
 
 `BACKUP_FOLDER`: - name of folder or path to put backups (eg `myapp/db_backups/`). defaults to root of bucket.
 
@@ -119,6 +123,8 @@ mongodbbackup:
 `INIT_RESTORE` - if set, restore from latest when container is launched
 
 `DISABLE_CRON` - if set, it will skip setting up automated backups. good for when you want to use this container to seed a dev environment.
+
+`RETAIN_COUNT` - how many backups should be kept. `7` by default.
 
 ## Restore from a backup
 
