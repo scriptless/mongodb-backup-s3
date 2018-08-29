@@ -25,19 +25,8 @@ docker run -d \
   --env MONGODB_PORT=27017 \
   --env MONGODB_USER=admin \
   --env MONGODB_PASS=password \
-  chobostar/mongodb-backup-s3
-```
-
-If you link `chobostar/mongodb-backup-s3` to a mongodb container with an alias named mongodb, this image will try to auto load the `host`, `port`, `user`, `pass` if possible. Like this:
-
-```
-docker run -d \
-  --env AWS_ACCESS_KEY_ID=myaccesskeyid \
-  --env AWS_SECRET_ACCESS_KEY=mysecretaccesskey \
-  --env BUCKET=mybucketname \
-  --env BACKUP_FOLDER=a/sub/folder/path/ \
-  --env INIT_BACKUP=true \
-  --link my_mongo_db:mongodb \
+  --env ENDPOINT_URL=https://s3.example.com
+  --env RETAIN_COUNT=5
   chobostar/mongodb-backup-s3
 ```
 
@@ -51,7 +40,6 @@ docker run -d \
   --env BUCKET_REGION=mybucketregion \
   --env BACKUP_FOLDER=a/sub/folder/path/ \
   --env INIT_BACKUP=true \
-  --link my_mongo_db:mongodb \
   chobostar/mongodb-backup-s3
 ```
 
@@ -68,6 +56,8 @@ mongodbbackup:
     - AWS_SECRET_ACCESS_KEY=mysecretaccesskey
     - BUCKET=my-s3-bucket
     - BACKUP_FOLDER=prod/db/
+    - ENDPOINT_URL=https://s3.example.com
+    - RETAIN_COUNT=5
   restart: always
 ```
 
