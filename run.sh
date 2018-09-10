@@ -98,7 +98,7 @@ echo "=> Retain script created"
 ln -s /restore.sh /usr/bin/restore
 ln -s /backup.sh /usr/bin/backup
 ln -s /listbackups.sh /usr/bin/listbackups
-ln -s /retain.shd /usr/bin/retain
+ln -s /retain.sh /usr/bin/retain
 
 touch /mongo_backup.log
 
