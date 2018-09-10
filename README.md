@@ -136,4 +136,4 @@ docker exec mongodb-backup-s3 /restore.sh
 
 ## Acknowledgements
 
-  * forked from [halvves/mongodb-backup-s3](https://github.com/halvves/mongodb-backup-s3) fork of [futurist](https://github.com/futurist)'s fork of [tutumcloud/mongodb-backup](https://github.com/tutumcloud/mongodb-backup)
+  * forked from [halvves/mongodb-backup-s3](https://github.com/halvves/mongodb-backup-s3) fork of [futurist](https://github.com/futurist)'s fork of [tutumcloud/mongodb-backup](https://github.com/tutumcloud/mongodb-backup) fork of [chobostar/mongodb-backup-s3](https://github.com/chobostar/mongodb-backup-s3)
