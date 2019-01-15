@@ -1,54 +1,57 @@
 # mongodb-backup-s3
 
-This image runs mongodump to backup data using cronjob to an s3 bucket
+This image runs `mongodump` to backup data to an AWS S3 bucket. It can be run on a cron timer or
+immediate when the container is launched.
 
-Support custom S3 compatable storage
+We support custom S3 compatable storage by providing your own endpoint.
 
-Support retension by backups
+Limiting the (configurable) number of retained backups is also supported.
 
-## Forked from [deenoize/mongodb-backup-s3](https://github.com/deenoize/mongodb-backup-s3)
 
-Added support for AWS S3 v4 authorization mechanism for those who are experiencing error:
+## Forked from [zhonghuiwen/mongodb-backup-s3](https://github.com/zhonghuiwen/mongodb-backup-s3)
 
-```
-A client error (InvalidRequest) occurred when calling the PutObject operation: The authorization mechanism you have provided is not supported. Please use AWS4-HMAC-SHA256.
-```
+This fork adds:
+ - ability to run the retain script outside of cron
+ - updated mongo image base
+ - reduced image size
 
 ## Usage:
-
 ```
 docker run -d \
   --env AWS_ACCESS_KEY_ID=awsaccesskeyid \
   --env AWS_SECRET_ACCESS_KEY=awssecretaccesskey \
-  --env BUCKET=mybucketname
+  --env BUCKET=mybucketname \
   --env MONGODB_HOST=mongodb.host \
   --env MONGODB_PORT=27017 \
   --env MONGODB_USER=admin \
   --env MONGODB_PASS=password \
-  --env ENDPOINT_URL=https://s3.example.com
-  --env RETAIN_COUNT=5
-  chobostar/mongodb-backup-s3
+  --env ENDPOINT_URL=https://s3.example.com \
+  --env RETAIN_COUNT=5 \
+  ternandsparrow/mongodb-backup-s3:(version)
 ```
 
-If your bucket in not standard region and you get `A client error (PermanentRedirect) occurred when calling the PutObject operation: The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint` use BUCKET_REGION env var like this:
+If your bucket is not in a standard region and you get `A client error (PermanentRedirect) occurred
+when calling the PutObject operation: The bucket you are attempting to access must be addressed
+using the specified endpoint. Please send all future requests to this endpoint` use `BUCKET_REGION`
+env var like this (assume your region is `ap-southeast-2`):
 
 ```
 docker run -d \
   --env AWS_ACCESS_KEY_ID=myaccesskeyid \
   --env AWS_SECRET_ACCESS_KEY=mysecretaccesskey \
   --env BUCKET=mybucketname \
-  --env BUCKET_REGION=mybucketregion \
+  --env BUCKET_REGION=ap-southeast-2 \
   --env BACKUP_FOLDER=a/sub/folder/path/ \
   --env INIT_BACKUP=true \
-  chobostar/mongodb-backup-s3
+  ternandsparrow/mongodb-backup-s3:(version)
 ```
 
-Add to a docker-compose.yml to enhance your robotic army:
+Add to a `docker-compose.yml` to enhance your robotic army:
 
 For automated backups
 ```
 mongodbbackup:
-  image: 'chobostar/mongodb-backup-s3:latest'
+  image: 'ternandsparrow/mongodb-backup-s3:(version)'
   links:
     - mongodb
   environment:
@@ -64,7 +67,7 @@ mongodbbackup:
 Or use `INIT_RESTORE` with `DISABLE_CRON` for seeding/restoring/starting a db (great for a fresh instance or a dev machine)
 ```
 mongodbbackup:
-  image: 'chobostar/mongodb-backup-s3:latest'
+  image: 'ternandsparrow/mongodb-backup-s3:(version)'
   links:
     - mongodb
   environment:
@@ -74,6 +77,32 @@ mongodbbackup:
     - BACKUP_FOLDER=prod/db/
     - INIT_RESTORE=true
     - DISABLE_CRON=true
+```
+
+## Example AWS IAM policy
+
+This policy contains the required permissions for this container to operate. Replace the
+`YOUR-BUCKET-HERE` placeholder with your bucket name.
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::YOUR-BUCKET-HERE",
+        "arn:aws:s3:::YOUR-BUCKET-HERE/*"
+      ]
+    }
+  ]
+}
 ```
 
 ## Parameters
@@ -104,19 +133,24 @@ mongodbbackup:
 
 `CRON_TIME` - the interval of cron job to run mongodump. `0 3 * * *` by default, which is every day at 03:00hrs.
 
-`TZ` - timezone. default: `US/Eastern`
+`TZ` - timezone. default: `Australia/Adelaide`
 
-`CRON_TZ` - cron timezone. default: `US/Eastern`
+`CRON_TZ` - cron timezone. default: `Australia/Adelaide`
 
 `INIT_BACKUP` - if set, create a backup when the container launched
 
 `INIT_RESTORE` - if set, restore from latest when container is launched
+
+`INIT_RETAIN` - if set, purge old backups when container is launched (will run after backup if `INIT_BACKUP` is set)
 
 `DISABLE_CRON` - if set, it will skip setting up automated backups. good for when you want to use this container to seed a dev environment.
 
 `RETAIN_COUNT` - how many backups should be kept. `7` by default.
 
 ## Restore from a backup
+
+Note, all these commands expect that the contain is already running (cron is enabled).
+The commands will exec into the existing container to run the command.
 
 To see the list of backups, you can run:
 ```
@@ -136,4 +170,11 @@ docker exec mongodb-backup-s3 /restore.sh
 
 ## Acknowledgements
 
-  * forked from [halvves/mongodb-backup-s3](https://github.com/halvves/mongodb-backup-s3) fork of [futurist](https://github.com/futurist)'s fork of [tutumcloud/mongodb-backup](https://github.com/tutumcloud/mongodb-backup) fork of [chobostar/mongodb-backup-s3](https://github.com/chobostar/mongodb-backup-s3)
+Fork tree
+```
+https://github.com/halvves/mongodb-backup-s3
+ └─ https://github.com/deenoize/mongodb-backup-s3
+    └─ https://github.com/chobostar/mongodb-backup-s3
+       └─ https://github.com/zhonghuiwen/mongodb-backup-s3
+          └─ this fork
+```

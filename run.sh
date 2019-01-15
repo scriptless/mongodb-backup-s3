@@ -103,8 +103,13 @@ ln -s /retain.sh /usr/bin/retain
 touch /mongo_backup.log
 
 if [ -n "${INIT_BACKUP}" ]; then
-    echo "=> Create a backup on the startup"
+    echo "=> Creating a backup on startup"
     /backup.sh
+fi
+
+if [ -n "${INIT_RETAIN}" ]; then
+    echo "=> Puring old backups on startup"
+    /retain.sh
 fi
 
 if [ -n "${INIT_RESTORE}" ]; then
