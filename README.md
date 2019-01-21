@@ -14,6 +14,7 @@ This fork adds:
  - ability to run the retain script outside of cron
  - updated mongo image base
  - reduced image size
+ - instructions for running as an ECS task on AWS Fargate
 
 ## Usage:
 ```
@@ -78,6 +79,10 @@ mongodbbackup:
     - INIT_RESTORE=true
     - DISABLE_CRON=true
 ```
+
+## Running on AWS ECS Fargate
+
+See the instructions in [aws-deploy/README.md](./aws-deploy/README.md).
 
 ## Example AWS IAM policy
 

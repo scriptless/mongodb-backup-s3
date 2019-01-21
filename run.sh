@@ -108,7 +108,7 @@ if [ -n "${INIT_BACKUP}" ]; then
 fi
 
 if [ -n "${INIT_RETAIN}" ]; then
-    echo "=> Puring old backups on startup"
+    echo "=> Purging old backups on startup"
     /retain.sh
 fi
 
