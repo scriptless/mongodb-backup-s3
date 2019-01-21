@@ -2,7 +2,7 @@
 # creates a Task Definition in AWS ECS for this docker image
 set -e
 
-imageVersion=1.2.0
+imageVersion=1.2.1
 region=ap-southeast-2
 # Expected env vars to fill in template. This trick is bash parameter expansion (http://wiki.bash-hackers.org/syntax/pe#display_error_if_null_or_unset)
 : ${Z_EXECUTION_ROLE_ARN:?} # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html, e.g: arn:aws:iam::123456789123:role/ecsTaskExecutionRole
