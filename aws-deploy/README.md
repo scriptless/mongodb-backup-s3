@@ -68,8 +68,8 @@ the cost should be minimal.
 
   1. create an env var from the newly created task ARN, we'll need that later
       ```bash
-      export Z_TASK_DEF_ARN=$(aws ecs list-task-definitions --query="taskDefinitionArns[?contains(@, 'mongodb-backup-s3-task') == \`true\`] | [0]" --output=text) && \
-      if [ -z "$Z_TASK_DEF_ARN" ]; then echo "[ERROR] no task ARN found, you did the previous command work?"; \
+      export Z_TASK_DEF_ARN=$(aws ecs list-task-definitions --query="taskDefinitionArns[?contains(@, 'mongodb-backup-s3-task-$Z_STAGE') == \`true\`] | [0]" --output=text) && \
+      if [ -z "$Z_TASK_DEF_ARN" -o "$Z_TASK_DEF_ARN" == "None" ]; then echo "[ERROR] no task ARN found, you did the previous command work?"; \
       else echo "[INFO] task ARN found, carry on"; fi
       ```
 
