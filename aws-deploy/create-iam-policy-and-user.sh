@@ -2,7 +2,7 @@
 set -e
 
 # Expected env vars to fill in template. This trick is bash parameter expansion (http://wiki.bash-hackers.org/syntax/pe#display_error_if_null_or_unset)
-: ${Z_S3_BUCKET:?} # S3 bucket to store backups, e.g: oeh-photopoints-db-backup-staging
+: ${Z_S3_BUCKET:?} # S3 bucket to store backups, e.g: someproject-db-backup-staging
 : ${Z_USER_NAME:?} # username of new user, e.g: mongodb-backup-s3-staging-user
 
 tempFile=`mktemp`

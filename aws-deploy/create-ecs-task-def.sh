@@ -8,10 +8,10 @@ region=ap-southeast-2
 : ${Z_EXECUTION_ROLE_ARN:?} # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html, e.g: arn:aws:iam::123456789123:role/ecsTaskExecutionRole
 : ${Z_LOG_GROUP_NAME:?} # e.g: /ecs/mongodb-backup-s3-logs-staging
 : ${Z_STAGE:?} # the stage name, e.g: 'staging' or 'prod'
-: ${Z_S3_BUCKET:?} # S3 bucket to store backups, e.g: oeh-photopoints-db-backup-staging
+: ${Z_S3_BUCKET:?} # S3 bucket to store backups, e.g: someproject-db-backup-staging
 Z_RETAIN_COUNT=${Z_RETAIN_COUNT:-4} # number of backups to retain, e.g: 4
-: ${Z_MONGODB_HOST:?} # e.g: OEHCluster-shard-0/oehcluster-shard-00-00-no9bo.mongodb.net,oehcluster-shard-00-01-no9bo.mongodb.net,oehcluster-shard-00-02-no9bo.mongodb.net
-: ${Z_MONGODB_DB:?} # the name of the database to backup, e.g: oehphotopoints-staging
+: ${Z_MONGODB_HOST:?} # e.g: SOMECluster-shard-0/somecluster-shard-00-00-no9bo.mongodb.net,somecluster-shard-00-01-no9bo.mongodb.net,somecluster-shard-00-02-no9bo.mongodb.net
+: ${Z_MONGODB_DB:?} # the name of the database to backup, e.g: someproject-staging
 : ${Z_MONGODB_USER:?} # username for the MongoDB connection
 : ${Z_MONGODB_PASS:?} # password for the MongoDB user
 : ${Z_AWS_ACCESS_KEY_ID:?} # for a user who can write to the S3 bucket

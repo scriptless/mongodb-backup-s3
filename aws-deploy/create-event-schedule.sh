@@ -2,7 +2,7 @@
 set -e
 
 # Expected env vars to fill in template. This trick is bash parameter expansion (http://wiki.bash-hackers.org/syntax/pe#display_error_if_null_or_unset)
-: ${Z_CLUSTER_ARN:?} # e.g: arn:aws:ecs:ap-southeast-2:123456789123:cluster/oeh-fargate-cluster
+: ${Z_CLUSTER_ARN:?} # e.g: arn:aws:ecs:ap-southeast-2:123456789123:cluster/cron-fargate-cluster
 : ${Z_ROLE_ARN:?} # e.g: arn:aws:iam::123456789123:role/ecsEventsRole
 : ${Z_TASK_DEF_ARN:?} # e.g: arn:aws:ecs:ap-southeast-2:123456789123:task-definition/mongodb-backup-s3-task:1
 : ${Z_SEC_GROUP:?} # e.g: sg-0cffbb75
