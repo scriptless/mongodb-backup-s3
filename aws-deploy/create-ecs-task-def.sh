@@ -2,7 +2,7 @@
 # creates a Task Definition in AWS ECS for this docker image
 set -e
 
-imageVersion=1.2.1
+imageVersion=1.2.2
 region=ap-southeast-2
 # Expected env vars to fill in template. This trick is bash parameter expansion (http://wiki.bash-hackers.org/syntax/pe#display_error_if_null_or_unset)
 : ${Z_EXECUTION_ROLE_ARN:?} # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html, e.g: arn:aws:iam::123456789123:role/ecsTaskExecutionRole
@@ -25,9 +25,9 @@ cat << EOJSON > $tempFile
   "executionRoleArn": "$Z_EXECUTION_ROLE_ARN",
   "containerDefinitions": [
     {
-      "name": "tomsaleeba_mongodb-backup-s3",
+      "name": "ternandsparrow_mongodb-backup-s3",
       "cpu": 0,
-      "image": "tomsaleeba/mongodb-backup-s3:$imageVersion",
+      "image": "ternandsparrow/mongodb-backup-s3:$imageVersion",
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
