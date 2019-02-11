@@ -84,17 +84,21 @@ the cost should be minimal.
       else echo "[INFO] task ARN found, carry on"; fi
       ```
 
-  1. create a schedule (that we'll use to run the task)
+  1. create a schedule (that we'll use to run the task). You can re-run this at a later time to update the
+     existing schedule.
       ```bash
       export Z_RULE_NAME=MongoBackup-$Z_STAGE
-      Z_CRON_MINUTE_HOUR='0 20' # TODO change me if you want
+      Z_CRON_MINUTE_HOUR='0 20' # TODO change me if you want, the format is 'minute hour'
       aws events put-rule \
         --schedule-expression="cron($Z_CRON_MINUTE_HOUR * * ? *)" \
         --name=$Z_RULE_NAME
       ```
 
   1. get the ARN of the `ecsEventsRole` IAM role that was created for us when we registered the task. If you don't already have
-     this role, [create it](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/CWE_IAM_role.html)
+     this role, [create it](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/CWE_IAM_role.html). Be
+     sure to also read the section of that page that talks about changing the *trust relationship* from
+     `ecs-tasks.amazonaws.com` to `events.amazonaws.com` otherwise nothing will work. See the troubleshooting
+     section at the bottom of this document for more info.
       ```bash
       export Z_ROLE_ARN=$(aws iam list-roles --query "Roles[?RoleName==\`ecsEventsRole\`].[Arn]" --output=text) && \
       if [ -z "$Z_ROLE_ARN" ]; then echo "[ERROR] no role ARN found, you need to create one and re-run this command"; \
@@ -136,3 +140,24 @@ the cost should be minimal.
 Unless you changed the cron schedule, the job will run once per day. You'll find the backups in the S3 bucket you defined. You can
 see logs from the job output in the *Logs* section of CloudWatch. You can see the task we created under the *Scheduled Tasks* tab
 for the cluster you created.
+
+# Troubleshooting
+
+## Scheduled task doesn't run and can't be edited in web console
+This can be frustrating because there are no logs and no errors, there's no nothing happening.
+
+The role that gets generated automatically when you configure a schedule ECS task via the web console works
+correctly but if you followed all the steps above on an account that didn't have the IAM roles existing and
+you had to manually create them, then you might have missed some of the steps (that page is hard to read
+correctly).
+
+The best indicator that you're experiencing this issue is when you try to edit the scheduled task using the
+web console and the first step of performing the update is "Create role". This first step fails (goes red) but
+then nothing happens in the web console. If you experience this, the following steps will fix this.
+
+Make sure to read the "To check for the CloudWatch Events IAM role in the IAM console" section on [this
+page](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/CWE_IAM_role.html). It tells you how to edit
+the *trust relationship* to trust `events.amazonsaws.com` instead of the `ecs-tasks.amazonaws.com` that
+happens by default.
+
+Once you've changed that trust relationship, things should start working.
