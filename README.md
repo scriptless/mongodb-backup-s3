@@ -26,7 +26,7 @@ docker run -d \
   --env MONGODB_USER=admin \
   --env MONGODB_PASS=password \
   --env RETAIN_COUNT=5 \
-  ternandsparrow/mongodb-backup-s3:1.2.2 # check DockerHub for latest tag
+  ghcr.io/k-t-corp/mongodb-backup-s3:master
 ```
 
 If your bucket is not in a standard region and you get `A client error (PermanentRedirect) occurred
@@ -42,7 +42,7 @@ docker run -d \
   --env BUCKET_REGION=ap-southeast-2 \
   --env BACKUP_FOLDER=a/sub/folder/path/ \
   --env INIT_BACKUP=true \
-  ternandsparrow/mongodb-backup-s3:1.2.2
+  ghcr.io/k-t-corp/mongodb-backup-s3:master
 ```
 
 Add to a `docker-compose.yml` to enhance your robotic army:
@@ -50,7 +50,7 @@ Add to a `docker-compose.yml` to enhance your robotic army:
 For automated backups
 ```
 mongodbbackup:
-  image: 'ternandsparrow/mongodb-backup-s3:1.2.2'
+  image: 'ghcr.io/k-t-corp/mongodb-backup-s3:master'
   links:
     - mongodb
   environment:
@@ -66,7 +66,7 @@ mongodbbackup:
 Or use `INIT_RESTORE` with `DISABLE_CRON` for seeding/restoring/starting a db (great for a fresh instance or a dev machine)
 ```
 mongodbbackup:
-  image: 'ternandsparrow/mongodb-backup-s3:1.2.2'
+  image: 'ghcr.io/k-t-corp/mongodb-backup-s3:master'
   links:
     - mongodb
   environment:
