@@ -11,9 +11,10 @@ Limiting the (configurable) number of retained backups is also supported.
 ## Forked from [ternandsparrow/mongodb-backup-s3](https://github.com/ternandsparrow/mongodb-backup-s3)
 
 This fork adds:
- - Updated base mongo image
+ - Updated base mongo image to `mongo:7`
  - Publish Docker image to GitHub Container Registry
  - linux/arm64 support
+ - Escape `MONGODB_PASS`
 
 ## Usage:
 ```
@@ -136,9 +137,9 @@ This policy contains the required permissions for this container to operate. Rep
 
 `CRON_TIME` - the interval of cron job to run mongodump. `0 3 * * *` by default, which is every day at 03:00hrs.
 
-`TZ` - timezone. default: `Australia/Adelaide`
+`TZ` - timezone. default: `America/Los_Angeles`
 
-`CRON_TZ` - cron timezone. default: `Australia/Adelaide`
+`CRON_TZ` - cron timezone. default: `America/Los_Angeles`
 
 `INIT_BACKUP` - if set, create a backup when the container launched
 
