@@ -11,6 +11,7 @@ Limiting the (configurable) number of retained backups is also supported.
 ## Forked from [ternandsparrow/mongodb-backup-s3](https://github.com/ternandsparrow/mongodb-backup-s3)
 
 This fork adds:
+ - Updated base mongo image
  - Publish Docker image to GitHub Container Registry
  - linux/arm64 support
 
