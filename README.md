@@ -1,20 +1,18 @@
 # mongodb-backup-s3
 
 This image runs `mongodump` to backup data to an AWS S3 bucket. It can be run on a cron timer or
-immediate when the container is launched.
+immediately when the container is launched.
 
 We support custom S3 compatable storage by providing your own endpoint.
 
 Limiting the (configurable) number of retained backups is also supported.
 
 
-## Forked from [zhonghuiwen/mongodb-backup-s3](https://github.com/zhonghuiwen/mongodb-backup-s3)
+## Forked from [ternandsparrow/mongodb-backup-s3](https://github.com/ternandsparrow/mongodb-backup-s3)
 
 This fork adds:
- - ability to run the retain script outside of cron
- - updated mongo image base
- - reduced image size
- - instructions for running as an ECS task on AWS Fargate
+ - Publish Docker image to GitHub Container Registry
+ - linux/arm64 support
 
 ## Usage:
 ```
@@ -180,5 +178,6 @@ https://github.com/halvves/mongodb-backup-s3
  └─ https://github.com/deenoize/mongodb-backup-s3
     └─ https://github.com/chobostar/mongodb-backup-s3
        └─ https://github.com/zhonghuiwen/mongodb-backup-s3
-          └─ this fork
+          └─ https://github.com/ternandsparrow/mongodb-backup-s3
+             └─ this fork
 ```
