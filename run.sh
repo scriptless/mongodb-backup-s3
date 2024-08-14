@@ -1,8 +1,10 @@
 #!/bin/bash
 
-MONGODB_URI=${MONGODB_URI:-${MONGODB_ENV_MONGODB_URI}}
-
 S3PATH="s3://$BUCKET/$BACKUP_FOLDER"
+
+[[ ( -n "${ENDPOINT_URL}" ) ]] && ENDPOINT_STR=" --endpoint-url ${ENDPOINT_URL}"
+[[ ( -n "${BUCKET_REGION}" ) ]] && REGION_STR=" --region ${BUCKET_REGION}"
+[[ ( -n "${AWS_STORAGE_CLASS}" ) ]] && STORAGE_CLASS_STR=" --storage-class ${AWS_STORAGE_CLASS}"
 
 #default value of retained backups
 RETAIN_COUNT_STR="7"
@@ -22,7 +24,7 @@ S3BACKUP=${S3PATH}\${BACKUP_NAME}
 
 aws configure set default.s3.signature_version s3v4
 echo "=> Backup started"
-if mongodump --uri ${MONGODB_URI} --archive=\${BACKUP_NAME} --gzip ${EXTRA_OPTS_MONGO} && aws s3 cp \${BACKUP_NAME} \${S3BACKUP} ${REGION_STR} ${ENDPOINT_STR} ${EXTRA_OPTS_AWS} && rm \${BACKUP_NAME} ;then
+if mongodump --uri ${MONGODB_URI} --archive=\${BACKUP_NAME} --gzip ${EXTRA_OPTS_MONGO} && aws s3 cp \${BACKUP_NAME} \${S3BACKUP} ${REGION_STR} ${ENDPOINT_STR} ${STORAGE_CLASS_STR} ${EXTRA_OPTS_AWS} && rm \${BACKUP_NAME} ;then
     echo "   > Backup succeeded"
 else
     echo "   > Backup failed"

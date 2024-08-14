@@ -13,6 +13,7 @@ This fork adds:
 
 - Replace MongoDB variables with MONGODB_URI
 - Add variables EXTRA_OPTS_MONGO and EXTRA_OPTS_AWS to replace EXTRA_OPTS
+- Add storage class option for aws command
 
 ## Usage:
 
@@ -113,6 +114,8 @@ This policy contains the required permissions for this container to operate. Rep
 `AWS_ACCESS_KEY_ID` - your aws access key id (for your s3 bucket)
 
 `AWS_SECRET_ACCESS_KEY`: - your aws secret access key (for your s3 bucket)
+
+`AWS_STORAGE_CLASS`: - sets the storage class
 
 `BUCKET`: - your s3 bucket
 
