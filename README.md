@@ -7,27 +7,23 @@ We support custom S3 compatable storage by providing your own endpoint.
 
 Limiting the (configurable) number of retained backups is also supported.
 
-
 ## Forked from [ternandsparrow/mongodb-backup-s3](https://github.com/ternandsparrow/mongodb-backup-s3)
 
 This fork adds:
- - Updated base mongo image to `mongo:7`
- - Publish Docker image to GitHub Container Registry
- - linux/arm64 support
- - Escape `MONGODB_PASS`
+
+- Replace MongoDB variables with MONGODB_URI
+- Add variables EXTRA_OPTS_MONGO and EXTRA_OPTS_AWS to replace EXTRA_OPTS
 
 ## Usage:
+
 ```
 docker run -d \
   --env AWS_ACCESS_KEY_ID=awsaccesskeyid \
   --env AWS_SECRET_ACCESS_KEY=awssecretaccesskey \
   --env BUCKET=mybucketname \
-  --env MONGODB_HOST=mongodb.host \
-  --env MONGODB_PORT=27017 \
-  --env MONGODB_USER=admin \
-  --env MONGODB_PASS=password \
+  --env MONGODB_URI=uri \
   --env RETAIN_COUNT=5 \
-  ghcr.io/k-t-corp/mongodb-backup-s3:master
+  docker.scriptless.io/mongodb-backup-s3:latest
 ```
 
 If your bucket is not in a standard region and you get `A client error (PermanentRedirect) occurred
@@ -43,15 +39,16 @@ docker run -d \
   --env BUCKET_REGION=ap-southeast-2 \
   --env BACKUP_FOLDER=a/sub/folder/path/ \
   --env INIT_BACKUP=true \
-  ghcr.io/k-t-corp/mongodb-backup-s3:master
+  docker.scriptless.io/mongodb-backup-s3:latest
 ```
 
 Add to a `docker-compose.yml` to enhance your robotic army:
 
 For automated backups
+
 ```
 mongodbbackup:
-  image: 'ghcr.io/k-t-corp/mongodb-backup-s3:master'
+  image: 'docker.scriptless.io/mongodb-backup-s3:latest'
   links:
     - mongodb
   environment:
@@ -65,9 +62,10 @@ mongodbbackup:
 ```
 
 Or use `INIT_RESTORE` with `DISABLE_CRON` for seeding/restoring/starting a db (great for a fresh instance or a dev machine)
+
 ```
 mongodbbackup:
-  image: 'ghcr.io/k-t-corp/mongodb-backup-s3:master'
+  image: 'docker.scriptless.io/mongodb-backup-s3:latest'
   links:
     - mongodb
   environment:
@@ -87,6 +85,7 @@ See the instructions in [aws-deploy/README.md](./aws-deploy/README.md).
 
 This policy contains the required permissions for this container to operate. Replace the
 `YOUR-BUCKET-HERE` placeholder with your bucket name.
+
 ```json
 {
   "Version": "2012-10-17",
@@ -123,23 +122,17 @@ This policy contains the required permissions for this container to operate. Rep
 
 `BACKUP_FOLDER`: - name of folder or path to put backups (eg `myapp/db_backups/`). defaults to root of bucket.
 
-`MONGODB_HOST` - the host/ip of your mongodb database
+`MONGODB_URI` - the uri of your mongodb database
 
-`MONGODB_PORT` - the port number of your mongodb database
+`EXTRA_OPTS_MONGO` - any extra options to pass to mongodump command
 
-`MONGODB_USER` - the username of your mongodb database. If MONGODB_USER is empty while MONGODB_PASS is not, the image will use admin as the default username
-
-`MONGODB_PASS` - the password of your mongodb database
-
-`MONGODB_DB` - the database name to dump. If not specified, it will dump all the databases
-
-`EXTRA_OPTS` - any extra options to pass to mongodump command
+`EXTRA_OPTS_AWS` - any extra options to pass to aws command
 
 `CRON_TIME` - the interval of cron job to run mongodump. `0 3 * * *` by default, which is every day at 03:00hrs.
 
-`TZ` - timezone. default: `America/Los_Angeles`
+`TZ` - timezone. default: `Europe/Berlin`
 
-`CRON_TZ` - cron timezone. default: `America/Los_Angeles`
+`CRON_TZ` - cron timezone. default: `Europe/Berlin`
 
 `INIT_BACKUP` - if set, create a backup when the container launched
 
@@ -157,6 +150,7 @@ Note, all these commands expect that the contain is already running (cron is ena
 The commands will exec into the existing container to run the command.
 
 To see the list of backups, you can run:
+
 ```
 docker exec mongodb-backup-s3 /listbackups.sh
 ```
@@ -168,6 +162,7 @@ docker exec mongodb-backup-s3 /restore.sh 20170406T155812
 ```
 
 To restore latest just:
+
 ```
 docker exec mongodb-backup-s3 /restore.sh
 ```
@@ -175,11 +170,13 @@ docker exec mongodb-backup-s3 /restore.sh
 ## Acknowledgements
 
 Fork tree
+
 ```
 https://github.com/halvves/mongodb-backup-s3
  └─ https://github.com/deenoize/mongodb-backup-s3
     └─ https://github.com/chobostar/mongodb-backup-s3
        └─ https://github.com/zhonghuiwen/mongodb-backup-s3
           └─ https://github.com/ternandsparrow/mongodb-backup-s3
-             └─ this fork
+            └─ https://github.com/k-t-corp/mongodb-backup-s3'
+                └─ this fork
 ```
