@@ -1,8 +1,8 @@
 FROM mongo:7
 
 ENV CRON_TIME="0 3 * * *" \
-  TZ=America/Los_Angeles \
-  CRON_TZ=America/Los_Angeles
+  TZ=Europe/Berlin \
+  CRON_TZ=Europe/Berlin
 
 # Install Python and Cron
 RUN \
